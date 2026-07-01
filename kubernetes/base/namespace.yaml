@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tripplanner
+  labels:
+    app.kubernetes.io/name: tripplanner
+    app.kubernetes.io/part-of: tripplanner
+
