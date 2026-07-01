@@ -2,6 +2,9 @@
 *.tfstate
 *.tfstate.*
 tfplan*
+*.tfvars
+!*.tfvars.example
+!terraform/environments/*/terraform.tfvars
 crash.log
 crash.*.log
 .env
@@ -9,4 +12,3 @@ crash.*.log
 *.key
 *.pem
 secret-values*.yaml
-
