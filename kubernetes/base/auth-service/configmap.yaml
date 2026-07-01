@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auth-service-config
+  labels:
+    app.kubernetes.io/name: auth-service
+    app.kubernetes.io/component: backend
+    app.kubernetes.io/part-of: tripplanner
+data:
+  NODE_ENV: production
+  PORT: "5001"
+  REDIS_URL: redis://redis:6379
+  JWT_KEY_ID: tripplanner-v1
+  JWT_EXPIRES_IN: 1d
+
