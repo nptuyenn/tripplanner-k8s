@@ -97,3 +97,48 @@ output "eks_node_group_name" {
   description = "EKS managed node group name."
   value       = module.eks.node_group_name
 }
+
+output "eks_oidc_provider_arn" {
+  description = "IAM OIDC provider ARN used by EKS service accounts."
+  value       = module.eks.oidc_provider_arn
+}
+
+output "eks_vpc_cni_role_arn" {
+  description = "IRSA role ARN used by the VPC CNI add-on."
+  value       = module.eks.vpc_cni_role_arn
+}
+
+output "eks_ebs_csi_role_arn" {
+  description = "IRSA role ARN used by the EBS CSI add-on."
+  value       = module.eks.ebs_csi_role_arn
+}
+
+output "eks_addon_versions" {
+  description = "Managed add-on versions installed in the EKS cluster."
+  value       = module.eks.addon_versions
+}
+
+output "kubeconfig_command" {
+  description = "Command to configure kubectl from Jenkins Master."
+  value       = "aws eks update-kubeconfig --region ${var.aws_region} --name ${module.eks.cluster_name}"
+}
+
+output "jenkins_master_ssm_command" {
+  description = "Command to open an SSM session to Jenkins Master."
+  value       = "aws ssm start-session --target ${module.jenkins.master_instance_id} --region ${var.aws_region}"
+}
+
+output "jenkins_worker_ssm_command" {
+  description = "Command to open an SSM session to Jenkins Worker."
+  value       = "aws ssm start-session --target ${module.jenkins.worker_instance_id} --region ${var.aws_region}"
+}
+
+output "jenkins_url" {
+  description = "Jenkins URL after Phase 3 installs and starts Jenkins."
+  value       = "http://${module.jenkins.master_public_ip}:8080"
+}
+
+output "sonarqube_url" {
+  description = "SonarQube URL after Phase 3 starts its container."
+  value       = "http://${module.jenkins.master_public_ip}:9000"
+}

@@ -5,7 +5,6 @@ exec > >(tee /var/log/tripplanner-user-data.log | logger -t user-data -s 2>/dev/
 
 dnf update -y
 dnf install -y \
-  curl \
   docker \
   dnf-plugins-core \
   git \
@@ -36,4 +35,3 @@ curl -fsSLo /tmp/helm.tar.gz "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd
 tar -xzf /tmp/helm.tar.gz -C /tmp
 install -m 0755 /tmp/linux-amd64/helm /usr/local/bin/helm
 rm -rf /tmp/helm.tar.gz /tmp/linux-amd64
-

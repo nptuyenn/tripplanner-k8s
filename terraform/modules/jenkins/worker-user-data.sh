@@ -5,7 +5,6 @@ exec > >(tee /var/log/tripplanner-user-data.log | logger -t user-data -s 2>/dev/
 
 dnf update -y
 dnf install -y \
-  curl \
   docker \
   git \
   gzip \
@@ -42,4 +41,3 @@ gpgcheck=0
 EOF
 
 dnf install -y trivy
-

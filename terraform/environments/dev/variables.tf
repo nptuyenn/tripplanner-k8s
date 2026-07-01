@@ -79,6 +79,11 @@ variable "admin_cidrs" {
   description = "Trusted IPv4 CIDRs allowed to reach administration ports."
   type        = set(string)
   default     = []
+
+  validation {
+    condition     = alltrue([for cidr in var.admin_cidrs : can(cidrnetmask(cidr))])
+    error_message = "Every admin_cidrs value must be a valid IPv4 CIDR."
+  }
 }
 
 variable "ssh_public_key" {
@@ -86,6 +91,14 @@ variable "ssh_public_key" {
   type        = string
   default     = null
   nullable    = true
+
+  validation {
+    condition = (
+      var.ssh_public_key == null
+      || can(regex("^ssh-(rsa|ed25519|ecdsa-[^ ]+) ", var.ssh_public_key))
+    )
+    error_message = "ssh_public_key must be null or a valid OpenSSH public key."
+  }
 }
 
 variable "jenkins_instance_type" {
@@ -135,4 +148,3 @@ variable "eks_node_root_volume_size" {
   type        = number
   default     = 30
 }
-
