@@ -81,3 +81,58 @@ variable "admin_cidrs" {
   default     = []
 }
 
+variable "ssh_public_key" {
+  description = "Optional OpenSSH public key for Jenkins EC2 access."
+  type        = string
+  default     = null
+  nullable    = true
+}
+
+variable "jenkins_instance_type" {
+  description = "EC2 instance type used by Jenkins Master and Worker."
+  type        = string
+  default     = "t3.large"
+}
+
+variable "jenkins_root_volume_size" {
+  description = "Jenkins EC2 root volume size in GiB."
+  type        = number
+  default     = 30
+}
+
+variable "eks_cluster_version" {
+  description = "Kubernetes minor version used by Amazon EKS."
+  type        = string
+  default     = "1.35"
+}
+
+variable "eks_node_instance_types" {
+  description = "EC2 instance types used by the EKS managed node group."
+  type        = list(string)
+  default     = ["t3.large"]
+}
+
+variable "eks_node_min_size" {
+  description = "Minimum EKS managed node count."
+  type        = number
+  default     = 2
+}
+
+variable "eks_node_desired_size" {
+  description = "Desired EKS managed node count."
+  type        = number
+  default     = 2
+}
+
+variable "eks_node_max_size" {
+  description = "Maximum EKS managed node count."
+  type        = number
+  default     = 3
+}
+
+variable "eks_node_root_volume_size" {
+  description = "EKS managed node root volume size in GiB."
+  type        = number
+  default     = 30
+}
+

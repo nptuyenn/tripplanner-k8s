@@ -57,3 +57,43 @@ output "eks_nodes_security_group_id" {
   description = "Additional security group prepared for EKS NodePorts."
   value       = module.security_groups.eks_nodes_security_group_id
 }
+
+output "jenkins_master_instance_id" {
+  description = "Jenkins Master EC2 instance ID."
+  value       = module.jenkins.master_instance_id
+}
+
+output "jenkins_worker_instance_id" {
+  description = "Jenkins Worker EC2 instance ID."
+  value       = module.jenkins.worker_instance_id
+}
+
+output "jenkins_master_public_ip" {
+  description = "Stable public IP assigned to Jenkins Master."
+  value       = module.jenkins.master_public_ip
+}
+
+output "jenkins_worker_public_ip" {
+  description = "Stable public IP assigned to Jenkins Worker."
+  value       = module.jenkins.worker_public_ip
+}
+
+output "eks_cluster_name" {
+  description = "EKS cluster name."
+  value       = module.eks.cluster_name
+}
+
+output "eks_cluster_endpoint" {
+  description = "EKS Kubernetes API endpoint."
+  value       = module.eks.cluster_endpoint
+}
+
+output "eks_cluster_oidc_issuer_url" {
+  description = "OIDC issuer URL used by the next IRSA step."
+  value       = module.eks.cluster_oidc_issuer_url
+}
+
+output "eks_node_group_name" {
+  description = "EKS managed node group name."
+  value       = module.eks.node_group_name
+}
