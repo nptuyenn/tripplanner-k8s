@@ -8,6 +8,9 @@ readonly CONFIG_FILE="${CONFIG_DIR}/agent.env"
 readonly SECRET_FILE="${CONFIG_DIR}/secret"
 readonly LAUNCHER_FILE="/usr/local/sbin/jenkins-agent-launcher"
 readonly SERVICE_FILE="/etc/systemd/system/jenkins-agent.service"
+readonly DOCKER_COMPOSE_VERSION="v5.3.0"
+readonly DOCKER_COMPOSE_PLUGIN_DIR="/usr/local/lib/docker/cli-plugins"
+readonly DOCKER_COMPOSE_PLUGIN="${DOCKER_COMPOSE_PLUGIN_DIR}/docker-compose"
 
 if [[ "${EUID}" -ne 0 ]]; then
   echo "Run this script as root (for example: sudo bash $0 <jenkins-url> <node-name>)." >&2
@@ -52,10 +55,73 @@ if ! command -v curl >/dev/null 2>&1; then
   dnf install -y curl-minimal
 fi
 
+if ! command -v docker >/dev/null 2>&1; then
+  echo "Docker CLI is missing. Confirm Docker was installed by the Worker user-data script." >&2
+  exit 1
+fi
+
 if ! getent group docker >/dev/null 2>&1; then
   echo "Docker group is missing. Confirm Docker was installed by the Worker user-data script." >&2
   exit 1
 fi
+
+case "$(uname -m)" in
+  x86_64 | amd64)
+    docker_compose_arch="x86_64"
+    ;;
+  aarch64 | arm64)
+    docker_compose_arch="aarch64"
+    ;;
+  *)
+    echo "Unsupported architecture for Docker Compose: $(uname -m)" >&2
+    exit 1
+    ;;
+esac
+
+docker_compose_asset="docker-compose-linux-${docker_compose_arch}"
+docker_compose_url="https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/${docker_compose_asset}"
+docker_compose_binary="$(mktemp)"
+docker_compose_checksum="$(mktemp)"
+
+cleanup_docker_compose_downloads() {
+  rm -f "${docker_compose_binary}" "${docker_compose_checksum}"
+}
+trap cleanup_docker_compose_downloads EXIT
+
+echo "Installing Docker Compose ${DOCKER_COMPOSE_VERSION}..."
+curl \
+  --fail \
+  --location \
+  --retry 5 \
+  --retry-delay 3 \
+  --silent \
+  --show-error \
+  --output "${docker_compose_binary}" \
+  "${docker_compose_url}"
+curl \
+  --fail \
+  --location \
+  --retry 5 \
+  --retry-delay 3 \
+  --silent \
+  --show-error \
+  --output "${docker_compose_checksum}" \
+  "${docker_compose_url}.sha256"
+
+expected_compose_sha256="$(awk 'NR == 1 { print $1 }' "${docker_compose_checksum}")"
+actual_compose_sha256="$(sha256sum "${docker_compose_binary}" | awk '{ print $1 }')"
+
+if [[ -z "${expected_compose_sha256}" || "${actual_compose_sha256}" != "${expected_compose_sha256}" ]]; then
+  echo "Docker Compose checksum verification failed." >&2
+  exit 1
+fi
+
+install -d -m 0755 "${DOCKER_COMPOSE_PLUGIN_DIR}"
+install -m 0755 "${docker_compose_binary}" "${DOCKER_COMPOSE_PLUGIN}"
+cleanup_docker_compose_downloads
+trap - EXIT
+
+docker compose version
 
 if ! id "${AGENT_USER}" >/dev/null 2>&1; then
   useradd \
