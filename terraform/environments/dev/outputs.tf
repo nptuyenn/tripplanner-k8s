@@ -78,6 +78,16 @@ output "jenkins_worker_public_ip" {
   value       = module.jenkins.worker_public_ip
 }
 
+output "jenkins_master_private_ip" {
+  description = "Private IP used by the Jenkins Worker to reach the Master."
+  value       = module.jenkins.master_private_ip
+}
+
+output "jenkins_worker_private_ip" {
+  description = "Private IP assigned to the Jenkins Worker."
+  value       = module.jenkins.worker_private_ip
+}
+
 output "eks_cluster_name" {
   description = "EKS cluster name."
   value       = module.eks.cluster_name
@@ -134,11 +144,11 @@ output "jenkins_worker_ssm_command" {
 }
 
 output "jenkins_url" {
-  description = "Jenkins URL after Phase 3 installs and starts Jenkins."
+  description = "URL of the Jenkins service."
   value       = "http://${module.jenkins.master_public_ip}:8080"
 }
 
 output "sonarqube_url" {
-  description = "SonarQube URL after Phase 3 starts its container."
+  description = "URL of the SonarQube service."
   value       = "http://${module.jenkins.master_public_ip}:9000"
 }
