@@ -12,3 +12,4 @@ crash.*.log
 *.key
 *.pem
 secret-values*.yaml
+sealed-secrets-key*.yaml
