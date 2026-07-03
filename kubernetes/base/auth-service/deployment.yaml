@@ -32,7 +32,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: auth-service
-          image: docker.io/nptuyenn/tripplanner-auth:0.0.0
+          image: docker.io/ptuyennn/tripplanner-auth:0.0.0
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
@@ -85,4 +85,3 @@ spec:
           emptyDir:
             medium: Memory
             sizeLimit: 32Mi
-
