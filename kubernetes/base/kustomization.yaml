@@ -15,6 +15,6 @@ images:
   - name: docker.io/ptuyennn/tripplanner-frontend
     newTag: 18b59e153ba0
   - name: docker.io/ptuyennn/tripplanner-auth
-    newTag: 96199e814b47
+    newTag: a78f562648e5
   - name: docker.io/ptuyennn/tripplanner-trips
     newTag: 96199e814b47
