@@ -7,6 +7,9 @@ resources:
   - namespace.yaml
   - redis
   - auth-service
+  - trip-service
+  - frontend
+  - network-policies.yaml
 
 images:
   - name: docker.io/ptuyennn/tripplanner-frontend
