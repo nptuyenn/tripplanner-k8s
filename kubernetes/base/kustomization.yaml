@@ -10,8 +10,8 @@ resources:
 
 images:
   - name: docker.io/ptuyennn/tripplanner-frontend
-    newTag: 0.0.0
+    newTag: 18b59e153ba0
   - name: docker.io/ptuyennn/tripplanner-auth
-    newTag: 0.0.0
+    newTag: 18b59e153ba0
   - name: docker.io/ptuyennn/tripplanner-trips
-    newTag: 0.0.0
+    newTag: 18b59e153ba0
