@@ -9,6 +9,7 @@ resources:
   - auth-service
   - trip-service
   - frontend
+  - observability
   - network-policies.yaml
 
 images:
