@@ -1,0 +1,32 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: tripplanner-email
+  labels:
+    alertmanagerConfig: tripplanner
+    app.kubernetes.io/name: tripplanner-email
+    app.kubernetes.io/component: monitoring
+    app.kubernetes.io/part-of: tripplanner
+spec:
+  route:
+    receiver: tripplanner-email
+    groupBy:
+      - alertname
+      - service
+      - severity
+    groupWait: 15s
+    groupInterval: 1m
+    repeatInterval: 4h
+  receivers:
+    - name: tripplanner-email
+      emailConfigs:
+        - to: "ngophuongtuyen2005@gmail.com"
+          from: "ngophuongtuyen2005@gmail.com"
+          smarthost: smtp.gmail.com:465
+          authUsername: "ngophuongtuyen2005@gmail.com"
+          authPassword:
+            name: alertmanager-email
+            key: smtp-password
+          requireTLS: true
+          forceImplicitTLS: true
+          sendResolved: true
