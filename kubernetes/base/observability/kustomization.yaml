@@ -3,5 +3,6 @@ kind: Kustomization
 
 resources:
   - auth-service-monitor.yaml
+  - grafana-dashboard.yaml
+  - prometheus-rules.yaml
   - trip-service-monitor.yaml
-

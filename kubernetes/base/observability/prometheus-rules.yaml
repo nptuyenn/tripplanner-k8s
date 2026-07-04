@@ -1,0 +1,131 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: tripplanner
+  labels:
+    app.kubernetes.io/name: tripplanner-alerts
+    app.kubernetes.io/component: monitoring
+    app.kubernetes.io/part-of: tripplanner
+    release: monitoring
+spec:
+  groups:
+    - name: tripplanner.availability
+      rules:
+        - alert: TripPlannerAuthServiceDown
+          expr: min(up{namespace="tripplanner", job="auth-service"}) < 1 or absent(up{namespace="tripplanner", job="auth-service"})
+          for: 2m
+          labels:
+            severity: critical
+            service: auth-service
+          annotations:
+            summary: TripPlanner Auth Service is unavailable
+            description: Prometheus has not been able to scrape every Auth Service target for two minutes.
+        - alert: TripPlannerTripServiceDown
+          expr: min(up{namespace="tripplanner", job="trip-service"}) < 1 or absent(up{namespace="tripplanner", job="trip-service"})
+          for: 2m
+          labels:
+            severity: critical
+            service: trip-service
+          annotations:
+            summary: TripPlanner Trip Service is unavailable
+            description: Prometheus has not been able to scrape every Trip Service target for two minutes.
+    - name: tripplanner.http
+      rules:
+        - alert: TripPlannerHighErrorRate
+          expr: |
+            (
+              sum by (service) (
+                rate({__name__=~"tripplanner_(auth|trips)_http_requests_total", status_code=~"5.."}[5m])
+              )
+              /
+              clamp_min(
+                sum by (service) (
+                  rate({__name__=~"tripplanner_(auth|trips)_http_requests_total"}[5m])
+                ),
+                0.001
+              )
+            ) > 0.05
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: TripPlanner {{ $labels.service }} has a high HTTP error rate
+            description: More than 5% of requests have returned 5xx responses for five minutes.
+        - alert: TripPlannerHighLatency
+          expr: |
+            histogram_quantile(
+              0.95,
+              sum by (le, service) (
+                rate({__name__=~"tripplanner_(auth|trips)_http_request_duration_seconds_bucket"}[5m])
+              )
+            ) > 1
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: TripPlanner {{ $labels.service }} has high request latency
+            description: The HTTP request latency p95 has exceeded one second for five minutes.
+    - name: tripplanner.kubernetes
+      rules:
+        - alert: TripPlannerPodRestarting
+          expr: increase(kube_pod_container_status_restarts_total{namespace="tripplanner"}[15m]) > 2
+          labels:
+            severity: warning
+          annotations:
+            summary: TripPlanner pod {{ $labels.pod }} is restarting
+            description: Container {{ $labels.container }} restarted more than twice in fifteen minutes.
+        - alert: TripPlannerPodHighCPU
+          expr: |
+            (
+              sum by (pod) (
+                rate(container_cpu_usage_seconds_total{
+                  namespace="tripplanner",
+                  container!="",
+                  container!="POD"
+                }[5m])
+              )
+              /
+              clamp_min(
+                sum by (pod) (
+                  kube_pod_container_resource_limits{
+                    namespace="tripplanner",
+                    resource="cpu"
+                  }
+                ),
+                0.001
+              )
+            ) > 0.85
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: TripPlanner pod {{ $labels.pod }} is using high CPU
+            description: CPU usage has exceeded 85% of its configured limit for ten minutes.
+        - alert: TripPlannerPodHighMemory
+          expr: |
+            (
+              sum by (pod) (
+                container_memory_working_set_bytes{
+                  namespace="tripplanner",
+                  container!="",
+                  container!="POD"
+                }
+              )
+              /
+              clamp_min(
+                sum by (pod) (
+                  kube_pod_container_resource_limits{
+                    namespace="tripplanner",
+                    resource="memory"
+                  }
+                ),
+                1
+              )
+            ) > 0.85
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: TripPlanner pod {{ $labels.pod }} is using high memory
+            description: Memory usage has exceeded 85% of its configured limit for ten minutes.
+
