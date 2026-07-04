@@ -54,6 +54,7 @@ alertmanager:
     storage:
       volumeClaimTemplate:
         spec:
+          storageClassName: tripplanner-gp3
           accessModes:
             - ReadWriteOnce
           resources:
@@ -86,6 +87,7 @@ prometheus:
     storageSpec:
       volumeClaimTemplate:
         spec:
+          storageClassName: tripplanner-gp3
           accessModes:
             - ReadWriteOnce
           resources:

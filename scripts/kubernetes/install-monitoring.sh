@@ -7,11 +7,13 @@ readonly CLUSTER_NAME="tripplanner-dev-eks"
 readonly NAMESPACE="monitoring"
 readonly RELEASE_NAME="monitoring"
 readonly GRAFANA_SECRET_NAME="monitoring-grafana-admin"
+readonly STORAGE_CLASS_NAME="tripplanner-gp3"
 readonly REPOSITORY_ROOT="$(
   cd "$(dirname "${BASH_SOURCE[0]}")/../.."
   pwd
 )"
 readonly VALUES_FILE="${REPOSITORY_ROOT}/kubernetes/monitoring/values.yaml"
+readonly STORAGE_CLASS_FILE="${REPOSITORY_ROOT}/kubernetes/monitoring/storage-class.yaml"
 
 if [[ "${EUID}" -eq 0 ]]; then
   echo "Run this script as the user that owns the kubectl context, not as root." >&2
@@ -25,10 +27,12 @@ for command in awk grep helm kubectl; do
   fi
 done
 
-if [[ ! -f "${VALUES_FILE}" ]]; then
-  echo "Monitoring values file is missing: ${VALUES_FILE}" >&2
-  exit 1
-fi
+for required_file in "${VALUES_FILE}" "${STORAGE_CLASS_FILE}"; do
+  if [[ ! -f "${required_file}" ]]; then
+    echo "Required monitoring file is missing: ${required_file}" >&2
+    exit 1
+  fi
+done
 
 current_context="$(kubectl config current-context)"
 if [[ "${current_context}" != *"${CLUSTER_NAME}"* ]]; then
@@ -51,12 +55,14 @@ if ! kubectl get csidriver ebs.csi.aws.com >/dev/null 2>&1; then
   exit 1
 fi
 
-default_storage_class="$(
-  kubectl get storageclass \
-    --output=jsonpath='{range .items[?(@.metadata.annotations.storageclass\.kubernetes\.io/is-default-class=="true")]}{.metadata.name}{"\n"}{end}'
+kubectl apply --filename "${STORAGE_CLASS_FILE}"
+
+storage_provisioner="$(
+  kubectl get storageclass "${STORAGE_CLASS_NAME}" \
+    --output=jsonpath='{.provisioner}'
 )"
-if [[ -z "${default_storage_class}" ]]; then
-  echo "A default StorageClass is required for monitoring persistent volumes." >&2
+if [[ "${storage_provisioner}" != "ebs.csi.aws.com" ]]; then
+  echo "StorageClass ${STORAGE_CLASS_NAME} must use the EBS CSI provisioner." >&2
   exit 1
 fi
 
