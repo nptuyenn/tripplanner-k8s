@@ -44,6 +44,12 @@ alertmanager:
   alertmanagerSpec:
     replicas: 1
     retention: 120h
+    alertmanagerConfigSelector:
+      matchLabels:
+        alertmanagerConfig: tripplanner
+    alertmanagerConfigNamespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: tripplanner
     resources:
       requests:
         cpu: 50m

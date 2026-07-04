@@ -15,6 +15,7 @@ spec:
           expr: min(up{namespace="tripplanner", job="auth-service"}) < 1 or absent(up{namespace="tripplanner", job="auth-service"})
           for: 2m
           labels:
+            namespace: tripplanner
             severity: critical
             service: auth-service
           annotations:
@@ -24,6 +25,7 @@ spec:
           expr: min(up{namespace="tripplanner", job="trip-service"}) < 1 or absent(up{namespace="tripplanner", job="trip-service"})
           for: 2m
           labels:
+            namespace: tripplanner
             severity: critical
             service: trip-service
           annotations:
@@ -47,6 +49,7 @@ spec:
             ) > 0.05
           for: 5m
           labels:
+            namespace: tripplanner
             severity: warning
           annotations:
             summary: TripPlanner {{ $labels.service }} has a high HTTP error rate
@@ -61,6 +64,7 @@ spec:
             ) > 1
           for: 5m
           labels:
+            namespace: tripplanner
             severity: warning
           annotations:
             summary: TripPlanner {{ $labels.service }} has high request latency
@@ -70,6 +74,7 @@ spec:
         - alert: TripPlannerPodRestarting
           expr: increase(kube_pod_container_status_restarts_total{namespace="tripplanner"}[15m]) > 2
           labels:
+            namespace: tripplanner
             severity: warning
           annotations:
             summary: TripPlanner pod {{ $labels.pod }} is restarting
@@ -97,6 +102,7 @@ spec:
             ) > 0.85
           for: 10m
           labels:
+            namespace: tripplanner
             severity: warning
           annotations:
             summary: TripPlanner pod {{ $labels.pod }} is using high CPU
@@ -124,8 +130,8 @@ spec:
             ) > 0.85
           for: 10m
           labels:
+            namespace: tripplanner
             severity: warning
           annotations:
             summary: TripPlanner pod {{ $labels.pod }} is using high memory
             description: Memory usage has exceeded 85% of its configured limit for ten minutes.
-
