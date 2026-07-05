@@ -46,25 +46,38 @@ entry point.
 
 ```text
 tripplanner-k8s/
-|-- kubernetes/
-|   |-- argocd/                    # Argo CD Application
-|   |-- base/
-|   |   |-- frontend/              # Frontend workload, Service, and ALB Ingress
-|   |   |-- auth-service/          # Auth workload and encrypted configuration
-|   |   |-- trip-service/          # Trip workload and encrypted configuration
-|   |   |-- redis/                 # In-cluster ephemeral Redis
-|   |   |-- observability/         # Monitors, alerts, dashboard, email routing
-|   |   |-- namespace.yaml
-|   |   `-- network-policies.yaml
-|   `-- monitoring/                # Helm values and EBS StorageClass
-|-- scripts/
-|   |-- jenkins/                   # Jenkins Master/Worker installation
-|   |-- sonarqube/                 # SonarQube installation
-|   `-- kubernetes/                # Cluster add-on and secret workflows
-`-- terraform/
-    |-- bootstrap/                 # S3 remote-state bucket
-    |-- environments/dev/          # Development environment root module
-    `-- modules/                   # Reusable AWS modules
+├── kubernetes/
+│   ├── argocd/
+│   │   ├── application.yaml
+│   │   └── kustomization.yaml
+│   ├── base/
+│   │   ├── auth-service/
+│   │   ├── frontend/
+│   │   ├── observability/
+│   │   ├── redis/
+│   │   ├── trip-service/
+│   │   ├── kustomization.yaml
+│   │   ├── namespace.yaml
+│   │   └── network-policies.yaml
+│   └── monitoring/
+│       ├── storage-class.yaml
+│       └── values.yaml
+├── scripts/
+│   ├── jenkins/
+│   └── kubernetes/
+├── terraform/
+│   ├── bootstrap/
+│   ├── environments/
+│   │   └── dev/
+│   └── modules/
+│       ├── edge/
+│       ├── eks/
+│       ├── iam/
+│       ├── jenkins/
+│       ├── network/
+│       └── security-groups/
+├── .gitignore
+└── README.md
 ```
 
 Argo CD watches `kubernetes/base` on the `main` branch.
