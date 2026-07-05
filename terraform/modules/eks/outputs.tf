@@ -44,6 +44,11 @@ output "ebs_csi_role_arn" {
   value       = aws_iam_role.ebs_csi.arn
 }
 
+output "load_balancer_controller_role_arn" {
+  description = "IRSA role ARN used by the AWS Load Balancer Controller."
+  value       = aws_iam_role.load_balancer_controller.arn
+}
+
 output "addon_versions" {
   description = "EKS managed add-on versions selected for the cluster."
   value = {

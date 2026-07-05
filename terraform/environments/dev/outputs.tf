@@ -123,6 +123,11 @@ output "eks_ebs_csi_role_arn" {
   value       = module.eks.ebs_csi_role_arn
 }
 
+output "eks_load_balancer_controller_role_arn" {
+  description = "IRSA role ARN used by the AWS Load Balancer Controller."
+  value       = module.eks.load_balancer_controller_role_arn
+}
+
 output "eks_addon_versions" {
   description = "Managed add-on versions installed in the EKS cluster."
   value       = module.eks.addon_versions
