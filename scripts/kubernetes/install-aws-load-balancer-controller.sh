@@ -2,7 +2,7 @@
 set -Eeuo pipefail
 
 readonly CHART_VERSION="1.14.0"
-readonly CONTROLLER_VERSION="v2.14.1"
+readonly CONTROLLER_VERSION="v2.14.0"
 readonly CLUSTER_NAME="tripplanner-dev-eks"
 readonly AWS_REGION="us-east-1"
 readonly NAMESPACE="kube-system"
