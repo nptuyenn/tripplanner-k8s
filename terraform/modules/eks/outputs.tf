@@ -52,9 +52,9 @@ output "load_balancer_controller_role_arn" {
 output "addon_versions" {
   description = "EKS managed add-on versions selected for the cluster."
   value = {
-    coredns            = aws_eks_addon.coredns.addon_version
-    ebs_csi            = aws_eks_addon.ebs_csi.addon_version
-    kube_proxy         = aws_eks_addon.kube_proxy.addon_version
-    vpc_cni            = aws_eks_addon.vpc_cni.addon_version
+    coredns    = aws_eks_addon.coredns.addon_version
+    ebs_csi    = aws_eks_addon.ebs_csi.addon_version
+    kube_proxy = aws_eks_addon.kube_proxy.addon_version
+    vpc_cni    = aws_eks_addon.vpc_cni.addon_version
   }
 }

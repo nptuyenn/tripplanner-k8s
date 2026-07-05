@@ -31,7 +31,7 @@ resource "aws_iam_role" "load_balancer_controller" {
 resource "aws_iam_policy" "load_balancer_controller" {
   name        = "${var.cluster_name}-load-balancer-controller"
   description = "AWS Load Balancer Controller policy from upstream release v2.14.1."
-  policy      = replace(
+  policy = replace(
     file("${path.module}/aws-load-balancer-controller-iam-policy.json"),
     "arn:aws:",
     "arn:${data.aws_partition.current.partition}:",

@@ -71,3 +71,11 @@ module "eks" {
   node_max_size                     = var.eks_node_max_size
   node_root_volume_size             = var.eks_node_root_volume_size
 }
+
+module "edge" {
+  source = "../../modules/edge"
+
+  name_prefix  = local.name_prefix
+  alb_arn      = data.aws_lb.app.arn
+  alb_dns_name = data.aws_lb.app.dns_name
+}

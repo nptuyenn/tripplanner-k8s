@@ -13,3 +13,7 @@ data "aws_ssm_parameter" "al2023_ami" {
 data "aws_ec2_managed_prefix_list" "cloudfront_origin_facing" {
   name = "com.amazonaws.global.cloudfront.origin-facing"
 }
+
+data "aws_lb" "app" {
+  name = "${local.name_prefix}-web"
+}

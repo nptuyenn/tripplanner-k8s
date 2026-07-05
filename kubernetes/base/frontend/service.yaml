@@ -7,12 +7,11 @@ metadata:
     app.kubernetes.io/component: web
     app.kubernetes.io/part-of: tripplanner
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app.kubernetes.io/name: frontend
   ports:
     - name: http
       port: 80
       targetPort: http
-      nodePort: 31000
       protocol: TCP

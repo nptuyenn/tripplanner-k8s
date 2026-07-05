@@ -162,3 +162,18 @@ output "sonarqube_url" {
   description = "URL of the SonarQube service."
   value       = "http://${module.jenkins.master_public_ip}:9000"
 }
+
+output "cloudfront_distribution_id" {
+  description = "CloudFront distribution ID for the public TripPlanner endpoint."
+  value       = module.edge.distribution_id
+}
+
+output "cloudfront_vpc_origin_id" {
+  description = "CloudFront VPC origin ID connected to the internal application load balancer."
+  value       = module.edge.vpc_origin_id
+}
+
+output "tripplanner_public_url" {
+  description = "Public HTTPS URL for TripPlanner."
+  value       = module.edge.distribution_url
+}
