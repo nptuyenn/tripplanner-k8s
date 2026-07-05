@@ -122,3 +122,48 @@ resource "aws_vpc_security_group_egress_rule" "eks_nodes" {
   ip_protocol       = "-1"
 }
 
+resource "aws_security_group" "app_alb" {
+  name        = "${var.name_prefix}-app-alb"
+  description = "Private entry point for the TripPlanner frontend"
+  vpc_id      = var.vpc_id
+
+  tags = {
+    Name = "${var.name_prefix}-app-alb"
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "app_alb_from_cloudfront" {
+  security_group_id = aws_security_group.app_alb.id
+  description       = "HTTP from the AWS-managed CloudFront origin-facing prefix list"
+  prefix_list_id    = var.cloudfront_origin_prefix_list_id
+  from_port         = 80
+  to_port           = 80
+  ip_protocol       = "tcp"
+}
+
+resource "aws_vpc_security_group_ingress_rule" "app_alb_from_jenkins_master" {
+  security_group_id            = aws_security_group.app_alb.id
+  description                  = "HTTP smoke tests from Jenkins Master"
+  referenced_security_group_id = aws_security_group.jenkins_master.id
+  from_port                    = 80
+  to_port                      = 80
+  ip_protocol                  = "tcp"
+}
+
+resource "aws_vpc_security_group_egress_rule" "app_alb_to_frontend" {
+  security_group_id = aws_security_group.app_alb.id
+  description       = "HTTP to frontend pod IPs inside the VPC"
+  cidr_ipv4         = var.vpc_cidr
+  from_port         = 8080
+  to_port           = 8080
+  ip_protocol       = "tcp"
+}
+
+resource "aws_vpc_security_group_ingress_rule" "eks_frontend_from_app_alb" {
+  security_group_id            = aws_security_group.eks_nodes.id
+  description                  = "Frontend pod traffic from the application load balancer"
+  referenced_security_group_id = aws_security_group.app_alb.id
+  from_port                    = 8080
+  to_port                      = 8080
+  ip_protocol                  = "tcp"
+}

@@ -58,6 +58,11 @@ output "eks_nodes_security_group_id" {
   value       = module.security_groups.eks_nodes_security_group_id
 }
 
+output "app_alb_security_group_id" {
+  description = "Security group used by the internal application load balancer."
+  value       = module.security_groups.app_alb_security_group_id
+}
+
 output "jenkins_master_instance_id" {
   description = "Jenkins Master EC2 instance ID."
   value       = module.jenkins.master_instance_id

@@ -13,3 +13,7 @@ output "eks_nodes_security_group_id" {
   value       = aws_security_group.eks_nodes.id
 }
 
+output "app_alb_security_group_id" {
+  description = "Security group ID for the internal application load balancer."
+  value       = aws_security_group.app_alb.id
+}

@@ -23,9 +23,11 @@ module "iam" {
 module "security_groups" {
   source = "../../modules/security-groups"
 
-  name_prefix = local.name_prefix
-  vpc_id      = module.network.vpc_id
-  admin_cidrs = var.admin_cidrs
+  name_prefix                      = local.name_prefix
+  vpc_id                           = module.network.vpc_id
+  vpc_cidr                         = module.network.vpc_cidr
+  cloudfront_origin_prefix_list_id = data.aws_ec2_managed_prefix_list.cloudfront_origin_facing.id
+  admin_cidrs                      = var.admin_cidrs
 }
 
 module "jenkins" {
@@ -68,10 +70,4 @@ module "eks" {
   node_desired_size                 = var.eks_node_desired_size
   node_max_size                     = var.eks_node_max_size
   node_root_volume_size             = var.eks_node_root_volume_size
-
-  depends_on = [
-    module.network,
-    module.iam,
-    module.security_groups,
-  ]
 }
