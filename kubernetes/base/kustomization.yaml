@@ -14,7 +14,7 @@ resources:
 
 images:
   - name: docker.io/ptuyennn/tripplanner-frontend
-    newTag: 18b59e153ba0
+    newTag: ebf08e5448f2
   - name: docker.io/ptuyennn/tripplanner-auth
     newTag: 96199e814b47
   - name: docker.io/ptuyennn/tripplanner-trips
